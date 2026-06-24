@@ -119,15 +119,21 @@ app.post('/api/submit', async (req, res) => {
       const emailResponse = await resend.emails.send({
         from: 'onboarding@resend.dev',
         to: 'huytp2020@gmail.com',
-        subject: `Ting ting! Có một [${title}] mới vừa được gửi tới nè! 🥰`,
-        html: `
-          <div style="font-family: sans-serif; background-color: #fdf2f8; padding: 20px; border-radius: 15px;">
-            <h2 style="color: #db2777;">Chào công chúa,</h2>
-            <p>Anh vừa đệ trình một đơn mới lên hệ thống:</p>
-            <h3 style="color: #2563eb;">📋 ${title}</h3>
-            <p>Bé mau mở web lên để ký duyệt nha! ❤️
-              https://form-be-iu.vercel.app/
-            </p>
+        subject: `hé lô cục dàng! Có một [${title}] mới vừa được gửi tới nè! 🥰`,
+html: `
+          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #ffe4e6; padding: 40px 20px; text-align: center;">
+            <div style="max-width: 500px; margin: 0 auto; background-color: #ffffff; padding: 30px 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(225, 29, 72, 0.1);">
+              <h2 style="color: #e11d48; margin-top: 0; font-size: 24px;">Ting ting! 💌</h2>
+              <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">Chào công chúa, anh vừa làm một đơn mới lên web nè:</p>
+              
+              <div style="background-color: #fce7f3; border-left: 5px solid #db2777; padding: 15px; margin: 25px 0; border-radius: 0 10px 10px 0; text-align: left;">
+                <h3 style="color: #db2777; margin: 0; font-size: 18px;">📋 ${title}</h3>
+              </div>
+              
+              <p style="color: #4b5563; font-size: 16px; margin-bottom: 30px;">Em bé xem xét và ký duyệt cho anh với nha! ❤️</p>
+              
+              <a href="https://form-be-iu.vercel.app/" style="display: inline-block; background-color: #f43f5e; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 50px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 10px rgba(244, 63, 94, 0.3);">✨ Mở Web Ký Duyệt ✨</a>
+            </div>
           </div>
         `
       });
