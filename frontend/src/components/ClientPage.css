@@ -1,0 +1,209 @@
+/* ==========================================================================
+   1. ĐÈ BẸP TOÀN BỘ KHUNG MẶC ĐỊNH CỦA VITE/REACT
+   ========================================================================== */
+html, body, #root, .min-h-screen {
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  background-color: #050b14; 
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   2. HỆ THỐNG NỀN DEEP BLUE KHÔNG GIAN 3D (CHUYỂN ĐỘNG MẠNH HƠN)
+   ========================================================================== */
+.bg-neon-layout {
+  background-image: url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  width: 100%;
+  min-height: 100vh;
+  position: fixed; 
+  top: 0; left: 0;
+  z-index: 0;
+  /* Tăng tốc độ và biên độ để thấy nền trôi rõ ràng hơn */
+  animation: deepSpacePan 15s ease-in-out infinite alternate;
+}
+
+@keyframes deepSpacePan {
+  0% { transform: scale(1) translate(0, 0); filter: brightness(0.8) contrast(1.1); }
+  50% { transform: scale(1.1) translate(-25px, 25px); filter: brightness(1.2) contrast(1); }
+  100% { transform: scale(1.05) translate(25px, -20px); filter: brightness(0.85) contrast(1.3); }
+}
+
+/* Lớp kính đen làm dịu nền để form nổi bật hơn */
+.bg-neon-layout::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(3, 8, 22, 0.4); 
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   3. HIỆU ỨNG HẠT BỤI SAO (HẠT TO HƠN, SÁNG RỰC HƠN)
+   ========================================================================== */
+/* ==========================================================================
+   3. HIỆU ỨNG HẠT BỤI SAO (SIÊU NHIỀU - SIÊU NÉT - SIÊU SÁNG)
+   ========================================================================== */
+.bg-neon-layout::after {
+  content: "";
+  position: absolute;
+  /* Ép lõi hạt to và rõ nét hơn */
+  width: 5px; height: 5px; 
+  border-radius: 50%;
+  
+  /* Ma trận 56 đốm sáng: Giảm độ nhòe (blur) xuống 1px-4px để hạt cực kỳ sắc nét */
+  box-shadow: 
+    /* DÀN SAO TRẮNG SIÊU SÁNG (Sắc nét) */
+    2vw 15vh 2px #ee0404, 8vw 45vh 3px #ffffff, 12vw 80vh 1px #861212, 18vw 20vh 4px #230ee0,
+    25vw 60vh 2px #ffffff, 32vw 90vh 3px #ffffff, 38vw 10vh 2px #ffffff, 45vw 75vh 4px #ffffff,
+    52vw 30vh 1px #ffffff, 58vw 85vh 3px #ff0202, 65vw 15vh 2px #ffffff, 72vw 50vh 4px #ffffff,
+    78vw 95vh 2px #ffffff, 85vw 25vh 3px #ffffff, 92vw 70vh 1px #4a06e8, 98vw 40vh 4px #05bdf0,
+
+    /* DÀN SAO NEON XANH BĂNG (Sáng rực) */
+    5vw 35vh 5px #00f3ff, 15vw 65vh 8px #00f3ff, 28vw 15vh 4px #00f3ff, 35vw 85vh 6px #00f3ff,
+    48vw 40vh 5px #00f3ff, 55vw 10vh 8px #00f3ff, 68vw 60vh 4px #00f3ff, 75vw 85vh 6px #00f3ff,
+    88vw 45vh 5px #00f3ff, 95vw 15vh 8px #00f3ff,
+
+    /* DÀN SAO NEON TÍM HỒNG (Tạo độ sâu 3D) */
+    10vw 10vh 6px #b026ff, 22vw 50vh 10px #ff00ff, 30vw 30vh 5px #b026ff, 42vw 95vh 8px #ff00ff,
+    50vw 20vh 6px #b026ff, 62vw 75vh 10px #ff00ff, 70vw 35vh 5px #b026ff, 82vw 10vh 8px #ff00ff,
+    90vw 80vh 6px #b026ff, 97vw 55vh 10px #ff00ff,
+
+    /* DÀN BỤI MINI XEN KẼ (Dày đặc không gian) */
+    3vw 55vh 0px #ffffff, 14vw 90vh 1px #ffffff, 24vw 35vh 0px #ffffff, 34vw 5vh 1px #ffffff,
+    44vw 65vh 0px #ffffff, 54vw 45vh 1px #ffffff, 64vw 95vh 0px #ffffff, 74vw 15vh 1px #ffffff,
+    84vw 55vh 0px #ffffff, 94vw 85vh 1px #ffffff;
+
+  /* Giảm thời gian xuống 10s để sao bay vun vút sinh động hơn */
+  animation: stardustDrift 10s linear infinite; 
+  z-index: 2;
+  opacity: 1; 
+}
+
+/* Kéo dài quãng đường bay để hạt không bị biến mất giữa chừng */
+@keyframes stardustDrift {
+  0% { transform: translateY(15vh) translateX(0); opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { transform: translateY(-120vh) translateX(-100px); opacity: 0; }
+}
+
+/* ==========================================================================
+   4. HIỆU ỨNG CHO THẺ (CARDS) - SHIMMER & NEON GLOW CỰC MẠNH
+   ========================================================================== */
+.content-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+.card-enter {
+  opacity: 0;
+  position: relative;
+  overflow: hidden; 
+  animation: 
+    cardSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    neonBreathing 3s ease-in-out infinite alternate; /* Rút ngắn thời gian nhịp thở */
+}
+
+/* Ánh sáng lướt qua mặt kính (Sáng chói hơn) */
+.card-enter::after {
+  content: "";
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  /* Tăng độ đục của dải sáng trắng lên 0.5 */
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%);
+  transform: rotate(30deg) translate(-100%, -100%);
+  animation: glassShimmer 5s infinite; /* Lướt nhanh hơn */
+  pointer-events: none;
+  z-index: 20;
+}
+
+@keyframes glassShimmer {
+  0%, 60% { transform: rotate(30deg) translate(-100%, -100%); }
+  100% { transform: rotate(30deg) translate(100%, 100%); }
+}
+
+/* Hào quang tỏa ra từ phía sau các thẻ (Tỏa rộng và sáng hơn) */
+@keyframes neonBreathing {
+  0% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(59, 130, 246, 0.3); }
+  100% { box-shadow: 0 10px 50px rgba(0, 0, 0, 0.9), 0 0 40px rgba(139, 92, 246, 0.6); }
+}
+
+@keyframes cardSlideUp {
+  from { opacity: 0; transform: translateY(40px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ==========================================================================
+   5. HIỆU ỨNG EMOJIS & NÚT BẤM (BIÊN ĐỘ RỘNG HƠN)
+   ========================================================================== */
+.animate-float {
+  animation: floatSmooth 3s ease-in-out infinite; /* Bay nhanh hơn */
+}
+
+@keyframes floatSmooth {
+  0%, 100% { transform: translateY(0); }
+  /* Bay cao gấp đôi (từ -8px lên -15px) */
+  50% { transform: translateY(-15px); filter: drop-shadow(0 15px 15px rgba(255,255,255,0.4)); }
+}
+
+.animate-sway {
+  display: inline-block;
+  animation: swayEffect 2.5s ease-in-out infinite;
+}
+
+@keyframes swayEffect {
+  /* Lắc lư nghiêng hẳn sang 2 bên (từ 3deg lên 8deg) */
+  0%, 100% { transform: rotate(-4deg) scale(1); }
+  50% { transform: rotate(4deg) scale(1.1); }
+}
+
+/* Nút Duyệt nhấp nháy phát quang rực rỡ */
+.animate-glow-pulse {
+  animation: btnGlowPulse 2s ease-in-out infinite;
+}
+
+@keyframes btnGlowPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(236, 72, 153, 0.6); transform: scale(1); }
+  /* Hào quang bung cực mạnh */
+  50% { box-shadow: 0 0 35px rgba(236, 72, 153, 1), 0 0 60px rgba(139, 92, 246, 0.8); transform: scale(1.04); }
+}
+
+/* Phản hồi chạm Mobile siêu mượt */
+button:active {
+  transform: scale(0.92) !important; /* Bấm lún sâu hơn */
+  opacity: 0.85;
+}
+
+/* ==========================================================================
+   6. HỌA TIẾT KÍNH MỜ BÊN TRONG THẺ
+   ========================================================================== */
+.bg-pattern-grid {
+  background-image: linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 165, 233, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-pattern-dots {
+  background-image: radial-gradient(rgba(236, 72, 153, 0.1) 2px, transparent 2px);
+  background-size: 16px 16px;
+}
+
+/* Responsive Mobile */
+@media (max-width: 640px) {
+  .card-enter {
+    border-radius: 24px !important;
+    padding: 24px 16px !important;
+  }
+  button {
+    padding: 14px 16px !important;
+    font-size: 16px !important;
+  }
+}
