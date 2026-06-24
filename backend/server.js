@@ -175,8 +175,10 @@ try {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend server đang chạy tại: http://localhost:${PORT}`);
+const PORT = process.env.PORT || 10000; // Render thường dùng cổng 10000
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Backend server đang chạy tại port ${PORT}`);
 });
 // ==========================================
 // 5. XÓA ĐƠN KHỎI SUPABASE
