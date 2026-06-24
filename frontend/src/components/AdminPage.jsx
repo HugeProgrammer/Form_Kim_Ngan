@@ -21,7 +21,7 @@ export default function AdminPage() {
   // HÀM FETCH DATA
   // ==========================================
   const fetchLiveForms = () => {
-    fetch('http://localhost:5000/api/forms')
+    fetch('https://form-kim-ngan.onrender.com/api/forms')
       .then((res) => res.json())
       .then((data) => setLiveForms(data))
       .catch((err) => console.error('Lỗi lấy nhật ký đơn:', err));
@@ -30,7 +30,7 @@ export default function AdminPage() {
   // Fetch dữ liệu ban đầu khi load trang
   useEffect(() => {
     // Lấy danh sách mẫu đơn
-    fetch('http://localhost:5000/api/templates')
+    fetch('http://form-kim-ngan.onrender.com/api/templates')
       .then((res) => res.json())
       .then((data) => setTemplates(data))
       .catch((err) => console.error('Lỗi fetch templates:', err));
@@ -59,7 +59,7 @@ export default function AdminPage() {
     if (!selectedTemplate) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/submit', {
+      const response = await fetch('http://form-kim-ngan.onrender.com/api/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -87,7 +87,7 @@ export default function AdminPage() {
   const handleDeleteForm = async (formId) => {
     if (!window.confirm('Xóa vĩnh viễn đơn này khỏi hệ thống chỉ huy chứ sếp Huy? 💥')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/forms/${formId}`, { method: 'DELETE' });
+      const response = await fetch(`http://form-kim-ngan.onrender.com/api/forms/${formId}`, { method: 'DELETE' });
       if (response.ok) {
         setLiveForms((prev) => prev.filter((f) => f.id !== formId));
       }
@@ -100,7 +100,7 @@ export default function AdminPage() {
   const handleResendForm = async (formId) => {
     if (!window.confirm('Sếp muốn gửi lại đơn này lên màn hình cho công chúa duyệt lại? 💌')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/forms/${formId}/respond`, {
+      const response = await fetch(`http://form-kim-ngan.onrender.com/api/forms/${formId}/respond`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
