@@ -144,10 +144,15 @@ app.post('/api/submit', async (req, res) => {
       `
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) console.log('Lỗi gửi mail:', error);
-      else console.log('Đã gửi thông báo tới Gmail:', info.response);
-    });
+console.log('Đang chuẩn bị gọi lệnh gửi mail...'); // Dòng này quan trọng
+
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+    console.log('Lỗi gửi mail thật sự:', error); // Sẽ hiện nếu sai mật khẩu/cấu hình
+  } else {
+    console.log('Thành công mỹ mãn, thông tin trả về:', info.response); // Sẽ hiện nếu Gmail nhận lệnh
+  }
+});
 
     res.status(200).json({ message: 'Tạo đơn và gửi thông báo thành công!' });
   } catch (error) {
