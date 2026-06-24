@@ -7,14 +7,14 @@ export default function ClientPage() {
   const [conditions, setConditions] = useState({});
   const [rejectClicks, setRejectClicks] = useState({});
 
-  useEffect(() => {
-    fetch('https://form-kim-ngan.onrender.com/api/templates')
+useEffect(() => {
+    // Sửa thành /api/forms để lấy danh sách đơn cần duyệt
+    fetch('https://form-kim-ngan.onrender.com/api/forms') 
       .then((res) => res.json())
       .then((data) => {
-        // LỌC THÔNG MINH: Chỉ hiển thị những đơn chưa xử lý xong
+        // Lọc những đơn chưa xử lý
         const donChuaXuLy = data.filter((form) => {
           const status = form.status || '';
-          // Ẩn đi nếu trạng thái chứa chữ "Đã ký" hoặc "phũ phàng" (từ chối 3 lần)
           return !status.includes('Đã ký') && !status.includes('phũ phàng');
         });
         
