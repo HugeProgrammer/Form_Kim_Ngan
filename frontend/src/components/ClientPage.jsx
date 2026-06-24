@@ -222,7 +222,7 @@ useEffect(() => {
                     <span className="text-6xl animate-float inline-block mb-2">🙇</span>
                     <h2 className="text-2xl font-black text-red-600">ĐƠN XIN LỖI THÀNH KHẨN</h2>
                     <div className="bg-white/90 p-4 rounded-xl my-4 text-left space-y-2 text-sm shadow-inner border border-gray-50">
-                      <p><b>Thằng bồ tội lỗi:</b> {form.data.hovaten || 'Huy bồ tội nghiệp'}</p>
+                      <p><b>Người gửi:</b> {form.data.hovaten || 'Huy bồ tội nghiệp'}</p>
                       <p>❌ <b>Tội trạng:</b> {form.data.loiXinLoi}</p>
                       <p>📝 <b>Lời hứa:</b> {form.data.loiHua}</p>
                     </div>
