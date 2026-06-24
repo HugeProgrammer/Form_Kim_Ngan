@@ -147,12 +147,11 @@ app.post('/api/submit', async (req, res) => {
 
 console.log('Đang chuẩn bị gọi lệnh gửi mail...'); // Dòng này quan trọng
 
-// XÓA ĐOẠN transporter.sendMail(...) CŨ ĐI, THAY BẰNG:
 
 try {
-  await resend.emails.send({
-    from: 'onboarding@resend.dev', // Sếp dùng mail này gửi đi
-    to: 'huytp2023@gmail.com',     // Mail nhận
+  const data = await resend.emails.send({
+    from: 'onboarding@resend.dev', // Địa chỉ gửi mặc định của Resend
+    to: 'huytp2023@gmail.com',     // Địa chỉ nhận
     subject: `Ting ting! Có một [${title}] mới vừa được gửi tới nè! 🥰`,
     html: `
       <div style="font-family: sans-serif; background-color: #fdf2f8; padding: 20px; border-radius: 15px;">
@@ -163,9 +162,9 @@ try {
       </div>
     `
   });
-  console.log('Đã gửi thông báo qua Resend thành công!');
-} catch (resendError) {
-  console.error('Lỗi khi gửi qua Resend:', resendError);
+  console.log('Thành công mỹ mãn, thông tin trả về:', data);
+} catch (error) {
+  console.error('Lỗi Resend thật sự:', error);
 }
 
     res.status(200).json({ message: 'Tạo đơn và gửi thông báo thành công!' });
