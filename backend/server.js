@@ -118,7 +118,7 @@ app.post('/api/submit', async (req, res) => {
     try {
       const emailResponse = await resend.emails.send({
         from: 'onboarding@resend.dev',
-        to: 'huytp2023@gmail.com',
+        to: 'huytp2020@gmail.com',
         subject: `Ting ting! Có một [${title}] mới vừa được gửi tới nè! 🥰`,
         html: `
           <div style="font-family: sans-serif; background-color: #fdf2f8; padding: 20px; border-radius: 15px;">
@@ -153,7 +153,7 @@ app.put('/api/forms/:id/respond', async (req, res) => {
   const { status, babyCondition, rejectClicks } = req.body;
   const { data, error } = await supabase.from('forms').update({ status, babyCondition, rejectClicks }).eq('id', id).select();
   if (error) return res.status(500).json({ error: error.message });
-  res.json({ message: 'Đã báo cáo về cho anh Huy! 🫡', data: data[0] });
+  res.json({ message: 'Đã báo cáo về cho anh iu của em bé! 🫡', data: data[0] });
 });
 
 // ==========================================
