@@ -32,7 +32,7 @@ export default function ClientPage() {
     const dieuKienEmBeNhap = conditions[formId] || "";
     
     try {
-      await fetch(`http://localhost:5000/api/forms/${formId}/respond`, {
+      await fetch(`http://form-kim-ngan.onrender.com/api/forms/${formId}/respond`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -57,7 +57,7 @@ export default function ClientPage() {
     setRejectClicks((prev) => ({ ...prev, [formId]: newClicks }));
 
     try {
-      await fetch(`http://localhost:5000/api/forms/${formId}/respond`, {
+      await fetch(`http://form-kim-ngan.onrender.com/api/forms/${formId}/respond`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
