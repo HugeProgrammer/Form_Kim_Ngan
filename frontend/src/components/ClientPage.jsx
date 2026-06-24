@@ -8,7 +8,7 @@ export default function ClientPage() {
   const [rejectClicks, setRejectClicks] = useState({});
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/forms')
+    fetch('https://form-kim-ngan.onrender.com/api/templates')
       .then((res) => res.json())
       .then((data) => {
         // LỌC THÔNG MINH: Chỉ hiển thị những đơn chưa xử lý xong
@@ -57,7 +57,7 @@ export default function ClientPage() {
     setRejectClicks((prev) => ({ ...prev, [formId]: newClicks }));
 
     try {
-      await fetch(`http://form-kim-ngan.onrender.com/api/forms/${formId}/respond`, {
+      await fetch(`https://form-kim-ngan.onrender.com/api/forms/${formId}/respond`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
