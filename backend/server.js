@@ -21,7 +21,7 @@ const formTemplates = [
     id: 'don-xin-loi',
     title: '🙇 Đơn Xin Lỗi (Thành Khẩn)',
     fields: [
-      { name: 'hovaten', label: 'Họ và tên', type: 'textarea', placeholder: 'Thằng bồ tồi tệ', required: true },
+      { name: 'hovaten', label: 'Họ và tên', type: 'textarea', placeholder: 'Người gửi', required: true },
       { name: 'loiXinLoi', label: 'Tội trạng của anh', type: 'textarea', placeholder: 'Anh đã làm gì sai...', required: true },
       { name: 'loiHua', label: 'Lời hứa sửa đổi', type: 'textarea', placeholder: 'Anh hứa sẽ không tái phạm...', required: true },
     ]
