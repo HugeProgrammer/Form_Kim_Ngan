@@ -125,7 +125,9 @@ app.post('/api/submit', async (req, res) => {
             <h2 style="color: #db2777;">Chào công chúa,</h2>
             <p>Anh vừa đệ trình một đơn mới lên hệ thống:</p>
             <h3 style="color: #2563eb;">📋 ${title}</h3>
-            <p>Bé mau mở web lên để ký duyệt nha! ❤️</p>
+            <p>Bé mau mở web lên để ký duyệt nha! ❤️
+              https://form-be-iu.vercel.app/
+            </p>
           </div>
         `
       });
