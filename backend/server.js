@@ -4,7 +4,8 @@ const { createClient } = require('@supabase/supabase-js');
 const nodemailer = require('nodemailer');
 const app = express();
 const PORT = 5000;
-
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 app.use(cors());
 app.use(express.json());
 
@@ -146,13 +147,26 @@ app.post('/api/submit', async (req, res) => {
 
 console.log('Đang chuẩn bị gọi lệnh gửi mail...'); // Dòng này quan trọng
 
-transporter.sendMail(mailOptions, (error, info) => {
-  if (error) {
-    console.log('Lỗi gửi mail thật sự:', error); // Sẽ hiện nếu sai mật khẩu/cấu hình
-  } else {
-    console.log('Thành công mỹ mãn, thông tin trả về:', info.response); // Sẽ hiện nếu Gmail nhận lệnh
-  }
-});
+// XÓA ĐOẠN transporter.sendMail(...) CŨ ĐI, THAY BẰNG:
+
+try {
+  await resend.emails.send({
+    from: 'onboarding@resend.dev', // Sếp dùng mail này gửi đi
+    to: 'huytp2023@gmail.com',     // Mail nhận
+    subject: `Ting ting! Có một [${title}] mới vừa được gửi tới nè! 🥰`,
+    html: `
+      <div style="font-family: sans-serif; background-color: #fdf2f8; padding: 20px; border-radius: 15px;">
+        <h2 style="color: #db2777;">Chào công chúa,</h2>
+        <p>Anh vừa đệ trình một đơn mới lên hệ thống:</p>
+        <h3 style="color: #2563eb;">📋 ${title}</h3>
+        <p>Bé mau mở web lên để ký duyệt nha! ❤️</p>
+      </div>
+    `
+  });
+  console.log('Đã gửi thông báo qua Resend thành công!');
+} catch (resendError) {
+  console.error('Lỗi khi gửi qua Resend:', resendError);
+}
 
     res.status(200).json({ message: 'Tạo đơn và gửi thông báo thành công!' });
   } catch (error) {
