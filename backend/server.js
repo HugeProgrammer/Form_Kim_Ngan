@@ -132,7 +132,7 @@ html: `
               
               <p style="color: #4b5563; font-size: 16px; margin-bottom: 30px;">Em bé xem xét và ký duyệt cho anh với nha! ❤️</p>
               
-              <a href="https://form-be-iu.vercel.app/" style="display: inline-block; background-color: #f43f5e; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 50px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 10px rgba(244, 63, 94, 0.3);">✨ Mở Web Ký Duyệt ✨</a>
+<p style="font-size: 16px; color: #4b5563; font-weight: bold;">Link web: <a href="https://form-be-iu.vercel.app/" style="color: #2563eb; text-decoration: underline; font-weight: normal;">https://form-be-iu.vercel.app/</a></p>
             </div>
           </div>
         `
