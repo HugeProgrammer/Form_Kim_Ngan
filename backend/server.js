@@ -119,66 +119,36 @@ app.get('/api/forms', async (req, res) => {
 // ==========================================
 // 4. LƯU ĐƠN MỚI LÊN SUPABASE (Từ trang Admin)
 // ==========================================
-app.post('/api/submit', async (req, res) => {
+app.post('/api/submit', async (req, res) => { // <--- PHẢI CÓ 'async' Ở ĐÂY
   try {
     const { templateId, title, data } = req.body;
 
-    // 1. GỌI LỆNH LƯU VÀO SUPABASE TRƯỚC
+    // 1. Lưu vào Supabase
     const { data: insertedData, error } = await supabase
       .from('forms')
       .insert([{ templateId, title, data, status: 'Đang chờ em bé... ⏳', rejectClicks: 0 }]);
 
-    if (error) throw error; // Nếu lưu lỗi, nó sẽ nhảy xuống phần catch
+    if (error) throw error;
 
-    // 2. NẾU LƯU THÀNH CÔNG, BẮT ĐẦU GỬI MAIL
-    const mailOptions = {
-      from: '"Hộp thư Kim Ngân 💌" <huytp2020@gmail.com>',
-      to: 'huytp2023@gmail.com',
-      subject: `Ting ting! Có một [${title}] mới vừa được gửi tới nè! 🥰`,
-      html: `
-        <div style="font-family: sans-serif; background-color: #fdf2f8; padding: 20px; border-radius: 15px;">
-          <h2 style="color: #db2777;">Chào công chúa,</h2>
-          <p>Anh vừa đệ trình một đơn mới lên hệ thống:</p>
-          <h3 style="color: #2563eb;">📋 ${title}</h3>
-          <p>Bé mau mở web lên để ký duyệt nha! ❤️</p>
-        </div>
-      `
-    };
-
-console.log('Đang chuẩn bị gọi lệnh gửi mail...'); // Dòng này quan trọng
-
-
-try {
-  const data = await resend.emails.send({
-    from: 'onboarding@resend.dev', // Địa chỉ gửi mặc định của Resend
-    to: 'huytp2023@gmail.com',     // Địa chỉ nhận
-    subject: `Ting ting! Có một [${title}] mới vừa được gửi tới nè! 🥰`,
-    html: `
-      <div style="font-family: sans-serif; background-color: #fdf2f8; padding: 20px; border-radius: 15px;">
-        <h2 style="color: #db2777;">Chào công chúa,</h2>
-        <p>Anh vừa đệ trình một đơn mới lên hệ thống:</p>
-        <h3 style="color: #2563eb;">📋 ${title}</h3>
-        <p>Bé mau mở web lên để ký duyệt nha! ❤️</p>
-      </div>
-    `
-  });
-  console.log('Thành công mỹ mãn, thông tin trả về:', data);
-} catch (error) {
-  console.error('Lỗi Resend thật sự:', error);
-}
+    // 2. GỬI MAIL QUA RESEND (Sếp thay đoạn này vào)
+    try {
+      const emailResponse = await resend.emails.send({ // <--- 'await' bây giờ mới chạy được vì nằm trong hàm async
+        from: 'onboarding@resend.dev',
+        to: 'huytp2023@gmail.com',
+        subject: `Ting ting! Có một [${title}] mới vừa được gửi tới nè! 🥰`,
+        html: `<p>Chào công chúa, anh vừa đệ trình một đơn mới...</p>`
+      });
+      console.log('Thành công mỹ mãn:', emailResponse);
+    } catch (resendError) {
+      console.error('Lỗi Resend:', resendError);
+    }
 
     res.status(200).json({ message: 'Tạo đơn và gửi thông báo thành công!' });
   } catch (error) {
-    console.error('Lỗi server:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-const PORT = process.env.PORT || 10000; // Render thường dùng cổng 10000
-
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Backend server đang chạy tại port ${PORT}`);
-});
 // ==========================================
 // 5. XÓA ĐƠN KHỎI SUPABASE
 // ==========================================
