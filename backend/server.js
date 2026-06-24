@@ -3,7 +3,6 @@ const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
 const nodemailer = require('nodemailer');
 const app = express();
-const PORT = 5000;
 const { Resend } = require('resend');
 const resend = new Resend(process.env.RESEND_API_KEY);
 app.use(cors());
@@ -148,10 +147,6 @@ app.post('/api/submit', async (req, res) => { // <--- PHẢI CÓ 'async' Ở Đ�
     res.status(500).json({ error: error.message });
   }
 });
-
-// ==========================================
-// 5. XÓA ĐƠN KHỎI SUPABASE
-// ==========================================
 app.delete('/api/forms/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -187,4 +182,8 @@ app.put('/api/forms/:id/respond', async (req, res) => {
   }
 
   res.json({ message: 'Đã báo cáo về cho anh Huy! 🫡', data: data[0] });
+});
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Backend server đang chạy tại port ${PORT}`);
 });
