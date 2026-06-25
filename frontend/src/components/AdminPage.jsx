@@ -7,7 +7,21 @@ export default function AdminPage() {
   const [isLocked, setIsLocked] = useState(true);
   const [passcode, setPasscode] = useState('');
   const SECRET_PIN = "0912"; 
-
+const handleRemindForm = async (formTitle) => {
+    if (!window.confirm('Sếp muốn ping nhắc bé duyệt đơn này? 🔔')) return;
+    
+    try {
+      await fetch(`https://form-kim-ngan.onrender.com/api/remind-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: formTitle })
+      });
+      setMessage('✅ Đã gửi mail nhắc nhở công chúa thành công!');
+    } catch (error) {
+      console.error('Lỗi nhắc nhở đơn:', error);
+      setMessage('❌ Có lỗi xảy ra lúc gửi nhắc nhở!');
+    }
+  };
   // ==========================================
   // STATE QUẢN LÝ FORM & LIVE LOGS
   // ==========================================
@@ -328,14 +342,14 @@ return (
                         {form.rejectClicks || 0}
                       </td>
                       <td className="px-4 py-4 align-top text-center flex justify-center gap-3">
-{/* Thay nút 🔄 hiện tại bằng nút này */}
-<button
-  onClick={() => handleResendForm(form.id, form.title)} 
-  className="text-gray-400 hover:text-blue-500 p-2 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md text-base"
-  title="Hồi sinh & Gửi lại đơn này"
->
-  🔄
-</button>
+                      {/* Thay nút 🔄 hiện tại bằng nút này */}
+                      <button
+                        onClick={() => handleResendForm(form.id, form.title)} 
+                        className="text-gray-400 hover:text-blue-500 p-2 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md text-base"
+                        title="Hồi sinh & Gửi lại đơn này"
+                      >
+                        🔄
+                      </button>
                         <button
                           onClick={() => handleDeleteForm(form.id)}
                           className="text-gray-400 hover:text-red-500 p-2 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md text-base"
@@ -343,6 +357,13 @@ return (
                         >
                           🗑️
                         </button>
+                        <button
+                            onClick={() => handleRemindForm(form.title)}
+                            className="text-gray-400 hover:text-yellow-500 p-2 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md text-base"
+                            title="Nhắc bé duyệt đơn"
+                          >
+                            🔔
+                          </button>
                       </td>
                     </tr>
                   );

@@ -161,6 +161,40 @@ app.post('/api/resend-email', async (req, res) => {
     res.status(500).json({ error: 'Lỗi không gửi được mail' });
   }
 });
+// DỊCH VỤ GỬI MAIL NHẮC NHỞ DUYỆT ĐƠN (PING)
+app.post('/api/remind-email', async (req, res) => {
+  const { title } = req.body;
+
+  try {
+    const data = await resend.emails.send({
+      from: 'Acme <onboarding@resend.dev>',
+      to: [process.env.RECEIVER_EMAIL || 'huytp2020@gmail.com'],
+      subject: `🔔 Nhắc nhẹ: Có đơn "${title}" đang chờ bé duyệt nè!`,
+      html: `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf2f8; padding: 40px 20px; text-align: center;">
+          <div style="max-width: 500px; margin: 0 auto; background-color: #ffffff; padding: 30px 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(236, 72, 153, 0.15);">
+            <div style="font-size: 40px; margin-bottom: 10px;">⏰</div>
+            <h2 style="color: #db2777; margin-top: 0; font-size: 24px;">Ting ting nhắc nhẹ! 🔔</h2>
+            <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">Công chúa ơi, có một chiếc đơn đang bị bám bụi chờ chữ ký của bé kìa:</p>
+            
+            <div style="background-color: #fce7f3; border-left: 5px solid #ec4899; padding: 15px; margin: 25px 0; border-radius: 0 10px 10px 0; text-align: left;">
+              <h3 style="color: #be185d; margin: 0; font-size: 18px;">📋 ${title}</h3>
+            </div>
+            
+            <p style="color: #4b5563; font-size: 16px; margin-bottom: 20px;">Bớt chút thời gian ngọc ngà vào check cho anh iu nha! Yêu bé ❤️</p>
+            
+            <p style="font-size: 16px; color: #4b5563; margin-bottom: 0; font-weight: bold;">Mở web lẹ nè: <a href="https://form-be-iu.vercel.app/" style="color: #2563eb; text-decoration: underline; font-weight: normal;">https://form-be-iu.vercel.app/</a></p>
+          </div>
+        </div>
+      `
+    });
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    console.error('Lỗi gửi mail nhắc nhở:', error);
+    res.status(500).json({ error: 'Lỗi không gửi được mail' });
+  }
+});
+
 app.post('/api/submit', async (req, res) => {
   try {
     const { templateId, title, data } = req.body;
