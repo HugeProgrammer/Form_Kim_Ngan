@@ -277,32 +277,53 @@ export default function AdminPage() {
                   else if (statusText.includes('Từ Chối (')) statusStyle = "text-amber-600 font-bold bg-amber-50 px-2.5 py-1 rounded-full";
                   else if (statusText.includes('phũ phàng')) statusStyle = "text-red-600 font-bold bg-red-50 px-2.5 py-1 rounded-full";
 
-                  return (
+return (
                     <tr key={form.id} className="hover:bg-gray-50/80 transition-colors">
-                      <td className="px-4 py-3">
-                        <p className="font-bold text-gray-900">{form.title}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">Ngày tạo: {form.submittedAt || 'Không rõ'}</p>
+                      {/* CỘT 1: NỘI DUNG ĐƠN TỪ (ĐÃ ĐƯỢC NÂNG CẤP) */}
+                      <td className="px-4 py-4 align-top">
+                        <p className="font-bold text-gray-900 text-base">{form.title}</p>
+                        <p className="text-xs text-gray-400 mt-0.5 mb-2">Ngày tạo: {form.submittedAt || 'Không rõ'}</p>
+                        
+                        {/* Box hiển thị chi tiết dữ liệu sếp đã điền */}
+                        {form.data && Object.keys(form.data).length > 0 && (
+                          <div className="bg-white/60 p-3 rounded-xl border border-gray-100 shadow-sm max-w-md">
+                            <ul className="space-y-1.5">
+                              {Object.entries(form.data).map(([key, value]) => (
+                                <li key={key} className="text-sm flex flex-col sm:flex-row sm:gap-2">
+                                  <span className="font-semibold text-gray-600 shrink-0 capitalize">
+                                    • {key}:
+                                  </span>
+                                  <span className="text-gray-800 whitespace-pre-wrap break-words font-medium">
+                                    {value}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </td>
-                      <td className="px-4 py-3">
+
+                      {/* CÁC CỘT CÒN LẠI GIỮ NGUYÊN NHƯ CŨ */}
+                      <td className="px-4 py-4 align-top">
                         <span className={statusStyle}>{statusText}</span>
                       </td>
-                      <td className="px-4 py-3 max-w-xs truncate font-medium text-gray-700 italic">
+                      <td className="px-4 py-4 align-top max-w-xs truncate font-medium text-gray-700 italic">
                         {form.babyCondition || 'Chưa điền điều kiện'}
                       </td>
-                      <td className="px-4 py-3 text-center font-black text-red-500 text-lg">
+                      <td className="px-4 py-4 align-top text-center font-black text-red-500 text-lg">
                         {form.rejectClicks || 0}
                       </td>
-                      <td className="px-4 py-3 text-center flex justify-center gap-3">
+                      <td className="px-4 py-4 align-top text-center flex justify-center gap-3">
                         <button
                           onClick={() => handleResendForm(form.id)}
-                          className="text-gray-400 hover:text-blue-500 p-1 rounded transition-colors text-base"
+                          className="text-gray-400 hover:text-blue-500 p-2 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md text-base"
                           title="Hồi sinh & Gửi lại đơn này"
                         >
                           🔄
                         </button>
                         <button
                           onClick={() => handleDeleteForm(form.id)}
-                          className="text-gray-400 hover:text-red-500 p-1 rounded transition-colors text-base"
+                          className="text-gray-400 hover:text-red-500 p-2 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md text-base"
                           title="Hủy đơn vĩnh viễn"
                         >
                           🗑️
