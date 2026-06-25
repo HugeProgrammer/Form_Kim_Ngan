@@ -240,13 +240,13 @@ useEffect(() => {
                 return (
                   <div key={form.id} style={{animationDelay: `${index * 0.1}s`}} className="card-enter bg-purple-50/95 backdrop-blur-sm bg-pattern-dots rounded-[2rem] shadow-xl border-4 border-purple-300 p-5 sm:p-6 w-full mx-auto relative text-center flex flex-col h-full">
                     <span className="text-6xl animate-sway inline-block mb-2">💖</span>
-                    <h2 className="text-2xl font-black text-purple-600">PHIẾU CẢM ƠN NGỌT NGÀO</h2>
+                    <h2 className="text-2xl font-black text-purple-600">ĐƠN CẢM ƠN EM BÉ</h2>
                     <div className="bg-white/90 p-4 rounded-xl my-4 text-left space-y-2 text-sm shadow-inner border border-gray-50">
                       <p>✨ <b>Lý do:</b> {form.data.lyDo}</p>
                       <p>💌 <b>Mong muốn</b> <i>"{form.data.loiYeuThuong}"</i></p>
                     </div>
+                    <textarea className="w-full p-3 border-2 border-blue-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Bé có gì muốn nói với anh hong, hong có thì để trống cũng được ạ" onChange={(e) => handleConditionChange(form.id, e.target.value)} />
                     <div className="flex gap-3 mt-auto pt-2">
-                      <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Khỏi cảm ơn</button>
                       <button onClick={() => handleSign(form.id, 'Anh biết rồi nè, yêu bé nhiều lắm nha! 🥰❤️')} className="flex-[2] bg-purple-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Tui biết ròi! ✨</button>
                     </div>
                   </div>
@@ -282,7 +282,7 @@ useEffect(() => {
                       <p>🥺 <b>Lý do níu kéo:</b> {form.data.lyDo}</p>
                       <p>⏱️ <b>Xin thêm:</b> {form.data.thoiGianXinThem}</p>
                     </div>
-                    <textarea className="w-full p-3 border-2 border-orange-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Ghi điều kiện vô đây (Ví dụ: Bao thêm ly trà sữa thì đi tiếp...)" onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                    <textarea className="w-full p-3 border-2 border-orange-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Em bé muốn anh làm gì để em đồng ý ạ, hong thì để trống cũng được ạ" onChange={(e) => handleConditionChange(form.id, e.target.value)} />
                     <div className="flex gap-3 mt-2">
                       <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Đi về!</button>
                       <button onClick={() => handleSign(form.id, 'Yêu em bé nhấttt! Hai đứa mình đi quẩy tiếp thuiii 🛵💨')} className="flex-[2] bg-orange-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Tui duyệt✨</button>
@@ -302,8 +302,18 @@ useEffect(() => {
                       <p>💉 <b>Biện pháp cần:</b> {form.data.bienPhap}</p>
                     </div>
                     <div className="flex gap-3 mt-auto pt-4">
-                      <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Tự lo đi</button>
-                      <button onClick={() => handleSign(form.id, 'Đã nhận được cứu trợ từ công chúa! Năng lượng anh hồi phục 1000% rồi 🚀❤️')} className="flex-[2] bg-rose-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">🚑 Cứu giá ngay!</button>
+                        <button 
+                          onClick={() => {
+                            // Hành động 1: Ký duyệt đơn và báo về hệ thống như bình thường
+                            handleSign(form.id, 'Đã nhận được cứu trợ từ công chúa! Năng lượng anh hồi phục 1000% rồi 🚀❤️');
+                            
+                            // Hành động 2: Tự động mở Messenger bay thẳng vào box chat của sếp
+                            window.open('https://m.me/gia.huy.730863', '_blank');
+                          }} 
+                          className="flex-[2] bg-rose-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse"
+                        >
+                          🚑 Cứu giá ngay!
+                        </button>
                     </div>
                   </div>
                 );
