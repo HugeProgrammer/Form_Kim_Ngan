@@ -80,6 +80,31 @@ const formTemplates = [
       { name: 'soLuong', label: 'Số lượng', type: 'text', placeholder: '100 cái hun, ôm chặt 30 phút' },
       { name: 'lyDo', label: 'Lý do', type: 'textarea', placeholder: 'Vì nhớ em bé quá...' }
     ]
+  },
+  {
+    id: 'xin-phep-hoat-dong',
+    title: '🎮🍻 Đơn Xin Cấp Phép Hoạt Động Riêng',
+    fields: [
+      { name: 'hoatDong', label: 'Hoạt động xin tham gia', type: 'text', placeholder: 'Chơi game với bạn, đi nhậu', required: true },
+      { name: 'thoiGian', label: 'Thời gian xin phép (Từ mấy giờ đến mấy giờ)', type: 'text', placeholder: 'Từ 8h đến 10h tối nay...', required: true },
+      { name: 'loiHua', label: 'Lời hứa', type: 'textarea', placeholder: 'Hứa sẽ rep tin nhắn đầy đủ, không để điện thoại im lặng, về đúng giờ...', required: true }
+    ]
+  },
+  {
+    id: 'xin-them-gio-hen-ho',
+    title: '⏳ Đơn Xin Gia Hạn Thời Gian Đi Chơi',
+    fields: [
+      { name: 'lyDo', label: 'Lý do chưa muốn đưa em về', type: 'textarea', placeholder: 'Vì ôm chưa đã, nhìn em bé chưa chán, phố xá còn vui...', required: true },
+      { name: 'thoiGianXinThem', label: 'Thời gian xin ở lại thêm', type: 'text', placeholder: 'Xin gia hạn thêm 30 phút/1 tiếng nữa...', required: true }
+    ]
+  },
+  {
+    id: 'yeu-cau-cuu-tro',
+    title: '🚨 Đơn Đề Nghị Cứu Trợ Tình Cảm Khẩn Cấp',
+    fields: [
+      { name: 'tinhTrang', label: 'Tình trạng sức khỏe tâm lý của anh', type: 'textarea', placeholder: 'Nhớ em bé đến mức không tập trung code được, cạn kiệt năng lượng...', required: true },
+      { name: 'bienPhap', label: 'Biện pháp cấp cứu mong muốn', type: 'text', placeholder: 'Cần một cuộc gọi video 5 phút hoặc một cái hẹn gặp gấp tối nay...', required: true }
+    ]
   }
 ];
 
