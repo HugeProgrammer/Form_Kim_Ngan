@@ -279,21 +279,21 @@ export default function AdminPage() {
 
 return (
                     <tr key={form.id} className="hover:bg-gray-50/80 transition-colors">
-                      {/* CỘT 1: NỘI DUNG ĐƠN TỪ (ĐÃ ĐƯỢC NÂNG CẤP) */}
+                      {/* CỘT 1: HIỂN THỊ TÊN ĐƠN VÀ CHI TIẾT CÁC TRƯỜNG THÔNG TIN SẾP ĐÃ NHẬP */}
                       <td className="px-4 py-4 align-top">
                         <p className="font-bold text-gray-900 text-base">{form.title}</p>
                         <p className="text-xs text-gray-400 mt-0.5 mb-2">Ngày tạo: {form.submittedAt || 'Không rõ'}</p>
                         
-                        {/* Box hiển thị chi tiết dữ liệu sếp đã điền */}
+                        {/* Box bóc tách dữ liệu sếp đã điền */}
                         {form.data && Object.keys(form.data).length > 0 && (
-                          <div className="bg-white/60 p-3 rounded-xl border border-gray-100 shadow-sm max-w-md">
+                          <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 shadow-sm w-max min-w-[250px] max-w-md mt-2">
                             <ul className="space-y-1.5">
                               {Object.entries(form.data).map(([key, value]) => (
                                 <li key={key} className="text-sm flex flex-col sm:flex-row sm:gap-2">
-                                  <span className="font-semibold text-gray-600 shrink-0 capitalize">
+                                  <span className="font-semibold text-slate-600 shrink-0 capitalize">
                                     • {key}:
                                   </span>
-                                  <span className="text-gray-800 whitespace-pre-wrap break-words font-medium">
+                                  <span className="text-slate-800 whitespace-pre-wrap break-words font-medium">
                                     {value}
                                   </span>
                                 </li>
@@ -303,12 +303,12 @@ return (
                         )}
                       </td>
 
-                      {/* CÁC CỘT CÒN LẠI GIỮ NGUYÊN NHƯ CŨ */}
+                      {/* CÁC CỘT CÒN LẠI (Trạng thái, Yêu cầu của bé...) */}
                       <td className="px-4 py-4 align-top">
                         <span className={statusStyle}>{statusText}</span>
                       </td>
                       <td className="px-4 py-4 align-top max-w-xs truncate font-medium text-gray-700 italic">
-                        {form.babyCondition || 'Chưa điền điều kiện'}
+                        {form.babyCondition || 'Chưa có yêu cầu'}
                       </td>
                       <td className="px-4 py-4 align-top text-center font-black text-red-500 text-lg">
                         {form.rejectClicks || 0}

@@ -144,7 +144,7 @@ useEffect(() => {
                       <p><span className="font-bold text-sky-700">📍 Điểm đến:</span> {form.data.diaDiem}</p>
                       <p><span className="font-bold text-sky-700">⏰ Giờ đón:</span> {form.data.thoiGian}</p>
                     </div>
-                    <textarea rows={2} placeholder="Anh phải làm gì cho em bé để em đồng ý?" className="w-full border-2 border-sky-200 rounded-xl p-3 focus:outline-none text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                    <textarea rows={2} placeholder="Em bé muốn đi tới đây hong ạ, nếu hong thì em muốn đi đâu nè" className="w-full border-2 border-sky-200 rounded-xl p-3 focus:outline-none text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
                     <div className="flex gap-3 mt-3">
                       <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Ở nhà</button>
                       <button onClick={() => handleSign(form.id, 'Chốt kèo! Em bé cứ việc leo lên xe nhé! 🛵💨')} className="flex-[2] bg-sky-500 text-white font-bold py-3 rounded-xl shadow-md animate-glow-pulse">🎀 Chốt kèo lên xe</button>
@@ -186,7 +186,7 @@ useEffect(() => {
                       {form.data.clipReview && <p>🎬 <a href={form.data.clipReview} target="_blank" rel="noreferrer" className="text-blue-500 underline font-bold">Xem trước clip quán ăn</a></p>}
                       <p className="text-gray-500 border-t pt-2 mt-2 font-medium">✋ <b>Lời thề:</b> <i>"{form.data.loiHua}"</i></p>
                     </div>
-                    <textarea rows={2} placeholder="Điều kiện để em bé chịu đi..." className="w-full border-2 rounded-xl p-3 focus:outline-none text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                    <textarea rows={2} placeholder="Em bé thấy món nào sao nè, nếu hong thì em cho anh 1 vài option nha" className="w-full border-2 rounded-xl p-3 focus:outline-none text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
                     <div className="flex gap-3 mt-3">
                       <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Thôi khỏe</button>
                       <button onClick={() => handleSign(form.id, isNhau ? 'Chốt kèo đi nhậu! Say anh cõng, ói anh dọn! 🍻' : 'Chốt kèo! Anh sẽ qua rước em bé đúng giờ 🤤')} className={`flex-[2] text-white font-bold py-3 rounded-xl shadow-md animate-glow-pulse ${isNhau ? 'bg-orange-500' : 'bg-red-500'}`}>{isNhau ? '🍻 Tui đồng ý' : '🤤 Tui đồng ý'}</button>
@@ -263,7 +263,7 @@ useEffect(() => {
                       <p>⏰ <b>Khung giờ:</b> {form.data.thoiGian}</p>
                       <p>✋ <b>Lời thề:</b> <i>"{form.data.loiHua}"</i></p>
                     </div>
-                    <textarea className="w-full p-3 border-2 border-blue-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Em bé có muốn ra điều kiện gì hông? (Ví dụ: Chơi game phải quay màn hình...)" onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                    <textarea className="w-full p-3 border-2 border-blue-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Em bé có muốn ra điều kiện gì hong ạ" onChange={(e) => handleConditionChange(form.id, e.target.value)} />
                     <div className="flex gap-3 mt-2">
                       <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Ở nhà!</button>
                       <button onClick={() => handleSign(form.id, 'Cảm ơn em bé! Anh hứa sẽ đúng giờ! 🫡❤️')} className="flex-[2] bg-blue-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Duyệt cho đi ✨</button>
