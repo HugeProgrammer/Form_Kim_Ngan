@@ -97,10 +97,13 @@ export default function AdminPage() {
   };
 
   // HÀM HỒI SINH ĐƠN VÀ GỬI LẠI LÊN FRONTEND
-  const handleResendForm = async (formId) => {
-    if (!window.confirm('Sếp muốn gửi lại đơn này lên màn hình cho công chúa duyệt lại? 💌')) return;
+// HÀM HỒI SINH ĐƠN VÀ GỬI LẠI LÊN FRONTEND (KÈM BẮN MAIL)
+  const handleResendForm = async (formId, formTitle) => {
+    if (!window.confirm('Sếp muốn gửi lại đơn này lên màn hình cho công chúa duyệt lại và báo mail luôn? 💌')) return;
+    
     try {
-      const response = await fetch(`https://form-kim-ngan.onrender.com/api/forms/${formId}/respond`, {
+      // 1. Gửi lệnh cập nhật trạng thái đơn trên Database (như code cũ của sếp)
+      const updateResponse = await fetch(`https://form-kim-ngan.onrender.com/api/forms/${formId}/respond`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -109,12 +112,23 @@ export default function AdminPage() {
           rejectClicks: 0 // Reset số lần bấm từ chối về 0
         })
       });
-      if (response.ok) {
-        setMessage('✅ Đã hồi sinh và gửi lại đơn thành công!');
+
+      // 2. Gọi API bắn mail thông báo (tới API sếp vừa tạo ở backend)
+await fetch(`https://form-kim-ngan.onrender.com/api/resend-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          title: formTitle || 'Đơn yêu cầu đặc biệt' // Truyền tên đơn qua backend để in vào mail
+        })
+      });
+
+      if (updateResponse.ok) {
+        setMessage('✅ Đã hồi sinh đơn và bắn mail nhắc nhở công chúa thành công!');
         fetchLiveForms(); // Làm mới lại bảng để thấy kết quả ngay
       }
     } catch (error) {
       console.error('Lỗi gửi lại đơn:', error);
+      setMessage('❌ Có lỗi xảy ra lúc gửi lại đơn, sếp check lại nhé!');
     }
   };
 
@@ -314,13 +328,14 @@ return (
                         {form.rejectClicks || 0}
                       </td>
                       <td className="px-4 py-4 align-top text-center flex justify-center gap-3">
-                        <button
-                          onClick={() => handleResendForm(form.id)}
-                          className="text-gray-400 hover:text-blue-500 p-2 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md text-base"
-                          title="Hồi sinh & Gửi lại đơn này"
-                        >
-                          🔄
-                        </button>
+{/* Thay nút 🔄 hiện tại bằng nút này */}
+<button
+  onClick={() => handleResendForm(form.id, form.title)} 
+  className="text-gray-400 hover:text-blue-500 p-2 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md text-base"
+  title="Hồi sinh & Gửi lại đơn này"
+>
+  🔄
+</button>
                         <button
                           onClick={() => handleDeleteForm(form.id)}
                           className="text-gray-400 hover:text-red-500 p-2 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md text-base"
