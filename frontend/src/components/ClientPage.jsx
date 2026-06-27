@@ -164,9 +164,17 @@ export default function ClientPage() {
                     <div className="bg-white/90 p-4 rounded-xl mb-4 space-y-2 text-sm border border-sky-100 shadow-inner">
                       <p><span className="font-bold text-sky-700">👨‍✈️ Tài xế:</span> {form.data.nguoiMoi}</p>
                       <p><span className="font-bold text-sky-700">📍 Điểm đến:</span> {form.data.diaDiem}</p>
-                      <p><span className="font-bold text-sky-700">⏰ Giờ đón:</span> {form.data.thoiGian}</p>
+                      {/* Đã đổi chữ Giờ đón thành Thời điểm */}
+                      <p><span className="font-bold text-sky-700">⏰ Thời điểm:</span> {form.data.thoiGian}</p>
+                      
+                      {/* Tự động hiển thị Ghi chú nếu sếp có nhập */}
+                      {form.data.ghiChu && (
+                        <p className="border-t border-sky-100 pt-2 mt-2 text-gray-600 italic">
+                          <span className="font-bold text-sky-700 not-italic">📝 Ghi chú:</span> {form.data.ghiChu}
+                        </p>
+                      )}
                     </div>
-                    
+
                     {!isResolved ? (
                       <>
                         <textarea rows={2} placeholder="Em bé muốn đi tới đây hong ạ, nếu hong thì em muốn đi đâu nè" className="w-full border-2 border-sky-200 rounded-xl p-3 focus:outline-none text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
