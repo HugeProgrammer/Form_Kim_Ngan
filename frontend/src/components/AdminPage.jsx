@@ -259,13 +259,6 @@ await fetch(`https://form-kim-ngan.onrender.com/api/resend-email`, {
             </button>
           </form>
         )}
-
-            <button
-              type="submit"
-              className="w-full bg-emerald-600 text-white font-semibold p-3 rounded-lg hover:bg-emerald-700 transition-colors"
-            >
-              Đăng tải lên Frontend
-            </button>
           </form>
         )}
 
