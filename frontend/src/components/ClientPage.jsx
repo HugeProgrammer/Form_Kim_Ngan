@@ -7,18 +7,12 @@ export default function ClientPage() {
   const [conditions, setConditions] = useState({});
   const [rejectClicks, setRejectClicks] = useState({});
 
-useEffect(() => {
-    // Sửa thành /api/forms để lấy danh sách đơn cần duyệt
+  useEffect(() => {
     fetch('https://form-kim-ngan.onrender.com/api/forms') 
       .then((res) => res.json())
       .then((data) => {
-        // Lọc những đơn chưa xử lý
-        const donChuaXuLy = data.filter((form) => {
-          const status = form.status || '';
-          return !status.includes('Đã ký') && !status.includes('phũ phàng');
-        });
-        
-        setSubmittedForms(donChuaXuLy);
+        // ĐÃ SỬA: Không lọc nữa, lấy toàn bộ dữ liệu form hiển thị lên màn hình
+        setSubmittedForms(data);
       })
       .catch((err) => console.error('Lỗi tải dữ liệu:', err));
   }, []);
@@ -40,6 +34,12 @@ useEffect(() => {
           babyCondition: dieuKienEmBeNhap.trim() !== "" ? dieuKienEmBeNhap : 'Chấp nhận hoàn toàn, không đòi hỏi gì thêm'
         })
       });
+
+      // ĐÃ SỬA: Cập nhật lại status của đơn ngay trên màn hình thay vì xóa nó đi
+      setSubmittedForms(prev => prev.map(form => 
+        form.id === formId ? { ...form, status: 'Đã ký duyệt! ✨❤️' } : form
+      ));
+
     } catch (err) { console.error('Lỗi đồng bộ:', err); }
 
     if (dieuKienEmBeNhap && dieuKienEmBeNhap.trim() !== "") {
@@ -47,35 +47,41 @@ useEffect(() => {
     } else {
       alert(`${successMessage}`);
     }
-
-    setSubmittedForms((prev) => prev.filter((form) => form.id !== formId));
   };
 
   const handleReject = async (formId) => {
-    const currentClicks = rejectClicks[formId] || 0;
+    const form = submittedForms.find(f => f.id === formId);
+    const currentClicks = rejectClicks[formId] || form.rejectClicks || 0;
     const newClicks = currentClicks + 1;
     setRejectClicks((prev) => ({ ...prev, [formId]: newClicks }));
+
+    const newStatus = newClicks >= 3 ? 'Bị từ chối phũ phàng 😭💔' : `Đang bấm nút Từ Chối (${newClicks} lần)`;
 
     try {
       await fetch(`https://form-kim-ngan.onrender.com/api/forms/${formId}/respond`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          status: newClicks >= 3 ? 'Bị từ chối phũ phàng 😭💔' : `Đang bấm nút Từ Chối (${newClicks} lần)`,
+          status: newStatus,
           rejectClicks: newClicks
         })
       });
+
+      // ĐÃ SỬA: Cập nhật lại status và số lần click của đơn ngay trên màn hình thay vì xóa
+      setSubmittedForms(prev => prev.map(f => 
+        f.id === formId ? { ...f, status: newStatus, rejectClicks: newClicks } : f
+      ));
+
     } catch (err) { console.error('Lỗi đồng bộ từ chối:', err); }
 
     if (newClicks === 1) {
-      alert('Lần 1: Web đang chạy chính thức rồi á bé, em bấm thêm 2 lần nữa form sẽ tự động xóa luôn á 😭');
+      alert('Lần 1: Web đang chạy chính thức rồi á bé, em bấm thêm 2 lần nữa form sẽ bị khóa luôn á 😭');
     } else if (newClicks === 2) {
-      alert('Lần 2: Em bé bấm thêm 1 lần nữa là nó xóa luôn đơn thiệt á🥺💥');
+      alert('Lần 2: Em bé bấm thêm 1 lần nữa là nó khóa đơn thiệt á🥺💥');
     } else if (newClicks === 3) {
-      alert('Lần 3: Dạ anh hiểu ròi ạ 🥺💔');
-      setSubmittedForms((prev) => prev.filter((form) => form.id !== formId));
+      alert('Lần 3: Dạ anh hiểu ròi ạ 🥺💔 Đơn đã được lưu vào lãnh cung!');
     } else {
-      alert('Đơn bị từ chối rùi mà, tha cho anh đi đừng bấm nữa 🥺');
+      alert('Đơn bị khóa rùi mà, tha cho anh đi đừng bấm nữa 🥺');
     }
   };
 
@@ -87,16 +93,14 @@ useEffect(() => {
       >
         ⚙️ Admin
       </button>
-      {/* KHU VỰC GIẢI CỨU GIAO DIỆN: Ép ảnh nền full-width độc lập */}
+      
       <div className="fixed inset-0 bg-neon-layout z-0 w-screen h-screen"></div>
 
-      {/* 1. ĐÃ SỬA CHỖ NÀY: Đổi max-w-xl thành max-w-5xl */}
       <div className="relative z-10 p-4 sm:p-8 max-w-5xl mx-auto space-y-8">
         
-        {/* Tiêu đề kính mờ */}
         <div className="p-6 bg-white/80 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 text-center animate-float max-w-2xl mx-auto">
           <h1 className="text-3xl font-black text-pink-600 animate-sway">💌 Hộp Thư công chúa</h1>
-          <p className="text-gray-500 mt-1 text-sm sm:text-base font-medium">Em bé duyệt các đơn này giúp anh với ạ</p>
+          <p className="text-gray-500 mt-1 text-sm sm:text-base font-medium">Nhật ký tình yêu của hai đứa mình</p>
         </div>
 
         {submittedForms.length === 0 ? (
@@ -104,10 +108,15 @@ useEffect(() => {
             Chưa có thư nào gửi cho bé cả 🥺... Đợi anh Huy xíu nha!
           </div>
         ) : (
-          /* 2. ĐÃ SỬA CHỖ NÀY: Dùng grid-cols-2 để chia 2 cột */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 auto-rows-fr">
             {submittedForms.map((form, index) => {
               
+              // ĐÃ SỬA: Biến kiểm tra xem đơn đã giải quyết xong chưa
+              const isResolved = 
+                form.status?.includes('Đã ký') || 
+                form.status?.includes('phũ phàng') || 
+                (rejectClicks[form.id] || form.rejectClicks || 0) >= 3;
+
               // 1. ĐƠN GIỮ ĐỒ
               if (form.templateId === 'don-giu-do') {
                 return (
@@ -122,11 +131,24 @@ useEffect(() => {
                       <p className="italic text-gray-600 border-t pt-2 mt-2">"{form.data.loiNhan}"</p>
                     </div>
 
-                    <textarea rows={2} placeholder="Anh phải làm gì cho em bé để em đồng ý?" className="w-full border-2 border-amber-200 rounded-xl p-3 focus:outline-none text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
-                    <div className="flex gap-3 mt-3">
-                      <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-200 text-gray-600 font-bold py-3 rounded-xl">❌ Khum Giữ</button>
-                      <button onClick={() => handleSign(form.id, 'Cảm mơn em bé đã đồng ý ạ 🥰')} className="flex-[2] bg-amber-500 text-white font-bold py-3 rounded-xl shadow-md animate-glow-pulse">✍️ Tui đồng ý</button>
-                    </div>
+                    {!isResolved ? (
+                      <>
+                        <textarea rows={2} placeholder="Anh phải làm gì cho em bé để em đồng ý?" className="w-full border-2 border-amber-200 rounded-xl p-3 focus:outline-none text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                        <div className="flex gap-3 mt-3">
+                          <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-200 text-gray-600 font-bold py-3 rounded-xl">❌ Khum Giữ</button>
+                          <button onClick={() => handleSign(form.id, 'Cảm mơn em bé đã đồng ý ạ 🥰')} className="flex-[2] bg-amber-500 text-white font-bold py-3 rounded-xl shadow-md animate-glow-pulse">✍️ Tui đồng ý</button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mt-auto pt-3">
+                        <div className="p-3 rounded-xl text-center font-bold text-sm bg-gray-100 text-gray-500 border border-gray-200">
+                          🔒 Đơn này đã lưu hồ sơ! 
+                          <span className="block text-xs font-normal mt-0.5 text-gray-400">
+                            ({form.status?.includes('Đã ký') ? 'Đã được duyệt ✨' : 'Đã bị từ chối 💔'})
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               }
@@ -144,11 +166,25 @@ useEffect(() => {
                       <p><span className="font-bold text-sky-700">📍 Điểm đến:</span> {form.data.diaDiem}</p>
                       <p><span className="font-bold text-sky-700">⏰ Giờ đón:</span> {form.data.thoiGian}</p>
                     </div>
-                    <textarea rows={2} placeholder="Em bé muốn đi tới đây hong ạ, nếu hong thì em muốn đi đâu nè" className="w-full border-2 border-sky-200 rounded-xl p-3 focus:outline-none text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
-                    <div className="flex gap-3 mt-3">
-                      <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Ở nhà</button>
-                      <button onClick={() => handleSign(form.id, 'Chốt kèo! Em bé cứ việc leo lên xe nhé! 🛵💨')} className="flex-[2] bg-sky-500 text-white font-bold py-3 rounded-xl shadow-md animate-glow-pulse">🎀 Chốt kèo lên xe</button>
-                    </div>
+                    
+                    {!isResolved ? (
+                      <>
+                        <textarea rows={2} placeholder="Em bé muốn đi tới đây hong ạ, nếu hong thì em muốn đi đâu nè" className="w-full border-2 border-sky-200 rounded-xl p-3 focus:outline-none text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                        <div className="flex gap-3 mt-3">
+                          <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Ở nhà</button>
+                          <button onClick={() => handleSign(form.id, 'Chốt kèo! Em bé cứ việc leo lên xe nhé! 🛵💨')} className="flex-[2] bg-sky-500 text-white font-bold py-3 rounded-xl shadow-md animate-glow-pulse">🎀 Chốt kèo lên xe</button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mt-auto pt-3">
+                        <div className="p-3 rounded-xl text-center font-bold text-sm bg-gray-100 text-gray-500 border border-gray-200">
+                          🔒 Đơn này đã lưu hồ sơ! 
+                          <span className="block text-xs font-normal mt-0.5 text-gray-400">
+                            ({form.status?.includes('Đã ký') ? 'Đã được duyệt ✨' : 'Đã bị từ chối 💔'})
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               }
@@ -164,11 +200,25 @@ useEffect(() => {
                       <p><span className="font-bold text-indigo-300">🏰 Địa chỉ:</span> <span className="text-white font-bold">{form.data.diaDiem}</span></p>
                       <p className="bg-indigo-950/40 p-2 rounded-lg text-indigo-200 italic mt-2">"{form.data.hoatDong}"</p>
                     </div>
-                    <textarea rows={2} placeholder="Bé muốn anh phục vụ thêm gì..." className="w-full border border-indigo-700 bg-indigo-900/30 text-white placeholder-indigo-400 rounded-xl p-3 focus:outline-none text-base mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
-                    <div className="flex gap-3 mt-3">
-                      <button onClick={() => handleReject(form.id)} className="flex-1 bg-indigo-900 text-indigo-300 font-bold py-3 rounded-xl">❌ Ngủ nhà</button>
-                      <button onClick={() => handleSign(form.id, 'Cảm mơn em bé đã ban phước ạ! 🌙')} className="flex-[2] bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">👑 Tui sẽ ban phước cho anh</button>
-                    </div>
+
+                    {!isResolved ? (
+                      <>
+                        <textarea rows={2} placeholder="Bé muốn anh phục vụ thêm gì..." className="w-full border border-indigo-700 bg-indigo-900/30 text-white placeholder-indigo-400 rounded-xl p-3 focus:outline-none text-base mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                        <div className="flex gap-3 mt-3">
+                          <button onClick={() => handleReject(form.id)} className="flex-1 bg-indigo-900 text-indigo-300 font-bold py-3 rounded-xl">❌ Ngủ nhà</button>
+                          <button onClick={() => handleSign(form.id, 'Cảm mơn em bé đã ban phước ạ! 🌙')} className="flex-[2] bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">👑 Tui sẽ ban phước cho anh</button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mt-auto pt-3">
+                        <div className="p-3 rounded-xl text-center font-bold text-sm bg-indigo-900/50 text-indigo-300 border border-indigo-800">
+                          🔒 Đơn này đã lưu hồ sơ! 
+                          <span className="block text-xs font-normal mt-0.5 text-indigo-400">
+                            ({form.status?.includes('Đã ký') ? 'Đã được duyệt ✨' : 'Đã bị từ chối 💔'})
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               }
@@ -186,11 +236,25 @@ useEffect(() => {
                       {form.data.clipReview && <p>🎬 <a href={form.data.clipReview} target="_blank" rel="noreferrer" className="text-blue-500 underline font-bold">Xem trước clip quán ăn</a></p>}
                       <p className="text-gray-500 border-t pt-2 mt-2 font-medium">✋ <b>Lời thề:</b> <i>"{form.data.loiHua}"</i></p>
                     </div>
-                    <textarea rows={2} placeholder="Em bé thấy món nào sao nè, nếu hong thì em cho anh 1 vài option nha" className="w-full border-2 rounded-xl p-3 focus:outline-none text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
-                    <div className="flex gap-3 mt-3">
-                      <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Thôi khỏe</button>
-                      <button onClick={() => handleSign(form.id, isNhau ? 'Chốt kèo đi nhậu! Say anh cõng, ói anh dọn! 🍻' : 'Chốt kèo! Anh sẽ qua rước em bé đúng giờ 🤤')} className={`flex-[2] text-white font-bold py-3 rounded-xl shadow-md animate-glow-pulse ${isNhau ? 'bg-orange-500' : 'bg-red-500'}`}>{isNhau ? '🍻 Tui đồng ý' : '🤤 Tui đồng ý'}</button>
-                    </div>
+
+                    {!isResolved ? (
+                      <>
+                        <textarea rows={2} placeholder="Em bé thấy món nào sao nè, nếu hong thì em cho anh 1 vài option nha" className="w-full border-2 rounded-xl p-3 focus:outline-none text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                        <div className="flex gap-3 mt-3">
+                          <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Thôi khỏe</button>
+                          <button onClick={() => handleSign(form.id, isNhau ? 'Chốt kèo đi nhậu! Say anh cõng, ói anh dọn! 🍻' : 'Chốt kèo! Anh sẽ qua rước em bé đúng giờ 🤤')} className={`flex-[2] text-white font-bold py-3 rounded-xl shadow-md animate-glow-pulse ${isNhau ? 'bg-orange-500' : 'bg-red-500'}`}>{isNhau ? '🍻 Tui đồng ý' : '🤤 Tui đồng ý'}</button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mt-auto pt-3">
+                        <div className="p-3 rounded-xl text-center font-bold text-sm bg-gray-100 text-gray-500 border border-gray-200">
+                          🔒 Đơn này đã lưu hồ sơ! 
+                          <span className="block text-xs font-normal mt-0.5 text-gray-400">
+                            ({form.status?.includes('Đã ký') ? 'Đã được duyệt ✨' : 'Đã bị từ chối 💔'})
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               }
@@ -206,11 +270,25 @@ useEffect(() => {
                       <p><b>🎯 Chỉ tiêu:</b> <span className="bg-pink-100 text-pink-600 font-bold px-3 py-0.5 rounded-full">{form.data.soLuong}</span></p>
                       <p className="text-gray-600 italic border-l-4 border-pink-400 pl-2 mt-2">"{form.data.lyDo}"</p>
                     </div>
-                    <textarea rows={2} placeholder="Ghi điều kiện trao đổi để em bé đồng ý..." className="w-full border-2 border-pink-200 rounded-xl p-3 text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
-                    <div className="flex gap-3 mt-3">
-                      <button onClick={() => handleReject(form.id)} className="flex-1 bg-white border-2 border-pink-200 text-pink-500 font-bold py-3 rounded-xl">Từ chối ❌</button>
-                      <button onClick={() => handleSign(form.id, 'Toẹt vời! cảm mơn cục dàng đã ban phước ạ 🥰💖')} className="flex-[2] bg-pink-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Tui ban phước cho anh 🥰</button>
-                    </div>
+
+                    {!isResolved ? (
+                      <>
+                        <textarea rows={2} placeholder="Ghi điều kiện trao đổi để em bé đồng ý..." className="w-full border-2 border-pink-200 rounded-xl p-3 text-base bg-white mt-auto" value={conditions[form.id] || ''} onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                        <div className="flex gap-3 mt-3">
+                          <button onClick={() => handleReject(form.id)} className="flex-1 bg-white border-2 border-pink-200 text-pink-500 font-bold py-3 rounded-xl">Từ chối ❌</button>
+                          <button onClick={() => handleSign(form.id, 'Toẹt vời! cảm mơn cục dàng đã ban phước ạ 🥰💖')} className="flex-[2] bg-pink-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Tui ban phước cho anh 🥰</button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mt-auto pt-3">
+                        <div className="p-3 rounded-xl text-center font-bold text-sm bg-gray-100 text-gray-500 border border-gray-200">
+                          🔒 Đơn này đã lưu hồ sơ! 
+                          <span className="block text-xs font-normal mt-0.5 text-gray-400">
+                            ({form.status?.includes('Đã ký') ? 'Đã được duyệt ✨' : 'Đã bị từ chối 💔'})
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               }
@@ -226,11 +304,25 @@ useEffect(() => {
                       <p>❌ <b>Tội trạng:</b> {form.data.loiXinLoi}</p>
                       <p>📝 <b>Lời hứa:</b> {form.data.loiHua}</p>
                     </div>
-                    <textarea className="w-full p-3 border-2 border-red-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Bé muốn anh làm gì để nguôi giận hong..." onChange={(e) => handleConditionChange(form.id, e.target.value)} />
-                    <div className="flex gap-3 mt-2">
-                      <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Không tha</button>
-                      <button onClick={() => handleSign(form.id, 'Cảm mơn em bé siêu rộng lượng đã tha lỗi cho anh! ✨❤️')} className="flex-[2] bg-red-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Tôi tha lỗi cho anh ✨</button>
-                    </div>
+
+                    {!isResolved ? (
+                      <>
+                        <textarea className="w-full p-3 border-2 border-red-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Bé muốn anh làm gì để nguôi giận hong..." onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                        <div className="flex gap-3 mt-2">
+                          <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Không tha</button>
+                          <button onClick={() => handleSign(form.id, 'Cảm mơn em bé siêu rộng lượng đã tha lỗi cho anh! ✨❤️')} className="flex-[2] bg-red-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Tôi tha lỗi cho anh ✨</button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mt-auto pt-3">
+                        <div className="p-3 rounded-xl text-center font-bold text-sm bg-gray-100 text-gray-500 border border-gray-200">
+                          🔒 Đơn này đã lưu hồ sơ! 
+                          <span className="block text-xs font-normal mt-0.5 text-gray-400">
+                            ({form.status?.includes('Đã ký') ? 'Đã được duyệt ✨' : 'Đã bị từ chối 💔'})
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               }
@@ -245,14 +337,29 @@ useEffect(() => {
                       <p>✨ <b>Lý do:</b> {form.data.lyDo}</p>
                       <p>💌 <b>Mong muốn</b> <i>"{form.data.loiYeuThuong}"</i></p>
                     </div>
-                    <textarea className="w-full p-3 border-2 border-blue-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Bé có gì muốn nói với anh hong, hong có thì để trống cũng được ạ" onChange={(e) => handleConditionChange(form.id, e.target.value)} />
-                    <div className="flex gap-3 mt-auto pt-2">
-                      <button onClick={() => handleSign(form.id, 'Anh biết rồi nè, yêu bé nhiều lắm nha! 🥰❤️')} className="flex-[2] bg-purple-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Tui biết ròi! ✨</button>
-                    </div>
+
+                    {!isResolved ? (
+                      <>
+                        <textarea className="w-full p-3 border-2 border-blue-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Bé có gì muốn nói với anh hong, hong có thì để trống cũng được ạ" onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                        <div className="flex gap-3 mt-auto pt-2">
+                          <button onClick={() => handleSign(form.id, 'Anh biết rồi nè, yêu bé nhiều lắm nha! 🥰❤️')} className="flex-[2] bg-purple-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Tui biết ròi! ✨</button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mt-auto pt-3">
+                        <div className="p-3 rounded-xl text-center font-bold text-sm bg-gray-100 text-gray-500 border border-gray-200">
+                          🔒 Đơn này đã lưu hồ sơ! 
+                          <span className="block text-xs font-normal mt-0.5 text-gray-400">
+                            ({form.status?.includes('Đã ký') ? 'Đã được duyệt ✨' : 'Đã bị từ chối 💔'})
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               }
-// 8. ĐƠN XIN CẤP PHÉP HOẠT ĐỘNG RIÊNG
+
+              // 8. ĐƠN XIN CẤP PHÉP HOẠT ĐỘNG RIÊNG
               if (form.templateId === 'xin-phep-hoat-dong') {
                 return (
                   <div key={form.id} style={{animationDelay: `${index * 0.1}s`}} className="card-enter bg-blue-50/95 backdrop-blur-sm bg-pattern-dots rounded-[2rem] shadow-xl border-4 border-blue-300 p-5 sm:p-6 w-full mx-auto relative text-center flex flex-col h-full">
@@ -263,11 +370,25 @@ useEffect(() => {
                       <p>⏰ <b>Khung giờ:</b> {form.data.thoiGian}</p>
                       <p>✋ <b>Lời thề:</b> <i>"{form.data.loiHua}"</i></p>
                     </div>
-                    <textarea className="w-full p-3 border-2 border-blue-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Em bé có muốn ra điều kiện gì hong ạ" onChange={(e) => handleConditionChange(form.id, e.target.value)} />
-                    <div className="flex gap-3 mt-2">
-                      <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Ở nhà!</button>
-                      <button onClick={() => handleSign(form.id, 'Cảm ơn em bé! Anh hứa sẽ đúng giờ! 🫡❤️')} className="flex-[2] bg-blue-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Duyệt cho đi ✨</button>
-                    </div>
+
+                    {!isResolved ? (
+                      <>
+                        <textarea className="w-full p-3 border-2 border-blue-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Em bé có muốn ra điều kiện gì hong ạ" onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                        <div className="flex gap-3 mt-2">
+                          <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Ở nhà!</button>
+                          <button onClick={() => handleSign(form.id, 'Cảm ơn em bé! Anh hứa sẽ đúng giờ! 🫡❤️')} className="flex-[2] bg-blue-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Duyệt cho đi ✨</button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mt-auto pt-3">
+                        <div className="p-3 rounded-xl text-center font-bold text-sm bg-gray-100 text-gray-500 border border-gray-200">
+                          🔒 Đơn này đã lưu hồ sơ! 
+                          <span className="block text-xs font-normal mt-0.5 text-gray-400">
+                            ({form.status?.includes('Đã ký') ? 'Đã được duyệt ✨' : 'Đã bị từ chối 💔'})
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               }
@@ -282,11 +403,25 @@ useEffect(() => {
                       <p>🥺 <b>Lý do níu kéo:</b> {form.data.lyDo}</p>
                       <p>⏱️ <b>Xin thêm:</b> {form.data.thoiGianXinThem}</p>
                     </div>
-                    <textarea className="w-full p-3 border-2 border-orange-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Em bé muốn anh làm gì để em đồng ý ạ, hong thì để trống cũng được ạ" onChange={(e) => handleConditionChange(form.id, e.target.value)} />
-                    <div className="flex gap-3 mt-2">
-                      <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Đi về!</button>
-                      <button onClick={() => handleSign(form.id, 'Yêu em bé nhấttt! Hai đứa mình đi quẩy tiếp thuiii 🛵💨')} className="flex-[2] bg-orange-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Tui duyệt✨</button>
-                    </div>
+
+                    {!isResolved ? (
+                      <>
+                        <textarea className="w-full p-3 border-2 border-orange-200 rounded-xl mb-2 text-base bg-white mt-auto" placeholder="Em bé muốn anh làm gì để em đồng ý ạ, hong thì để trống cũng được ạ" onChange={(e) => handleConditionChange(form.id, e.target.value)} />
+                        <div className="flex gap-3 mt-2">
+                          <button onClick={() => handleReject(form.id)} className="flex-1 bg-gray-100 text-gray-500 font-bold py-3 rounded-xl">❌ Đi về!</button>
+                          <button onClick={() => handleSign(form.id, 'Yêu em bé nhấttt! Hai đứa mình đi quẩy tiếp thuiii 🛵💨')} className="flex-[2] bg-orange-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse">Tui duyệt✨</button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mt-auto pt-3">
+                        <div className="p-3 rounded-xl text-center font-bold text-sm bg-gray-100 text-gray-500 border border-gray-200">
+                          🔒 Đơn này đã lưu hồ sơ! 
+                          <span className="block text-xs font-normal mt-0.5 text-gray-400">
+                            ({form.status?.includes('Đã ký') ? 'Đã được duyệt ✨' : 'Đã bị từ chối 💔'})
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               }
@@ -301,24 +436,32 @@ useEffect(() => {
                       <p>🤒 <b>Tình trạng:</b> {form.data.tinhTrang}</p>
                       <p>💉 <b>Biện pháp cần:</b> {form.data.bienPhap}</p>
                     </div>
-                    <div className="flex gap-3 mt-auto pt-4">
-                        <button 
-                          onClick={() => {
-                            // Hành động 1: Ký duyệt đơn và báo về hệ thống như bình thường
-                            handleSign(form.id, 'Đã nhận được cứu trợ từ công chúa! Năng lượng anh hồi phục 1000% rồi 🚀❤️');
-                            
-                            // Hành động 2: Tự động mở Messenger bay thẳng vào box chat của sếp
-                            window.open('https://m.me/gia.huy.730863', '_blank');
-                          }} 
-                          className="flex-[2] bg-rose-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse"
-                        >
-                          🚑 Cứu giá ngay!
-                        </button>
-                    </div>
+                    
+                    {!isResolved ? (
+                      <div className="flex gap-3 mt-auto pt-4">
+                          <button 
+                            onClick={() => {
+                              handleSign(form.id, 'Đã nhận được cứu trợ từ công chúa! Năng lượng anh hồi phục 1000% rồi 🚀❤️');
+                              window.open('https://m.me/gia.huy.730863', '_blank');
+                            }} 
+                            className="flex-[2] bg-rose-500 text-white font-bold py-3 rounded-xl shadow-lg animate-glow-pulse"
+                          >
+                            🚑 Cứu giá ngay!
+                          </button>
+                      </div>
+                    ) : (
+                      <div className="mt-auto pt-3">
+                        <div className="p-3 rounded-xl text-center font-bold text-sm bg-gray-100 text-gray-500 border border-gray-200">
+                          🔒 Đơn này đã lưu hồ sơ! 
+                          <span className="block text-xs font-normal mt-0.5 text-gray-400">
+                            ({form.status?.includes('Đã ký') ? 'Đã được duyệt ✨' : 'Đã bị từ chối 💔'})
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               }
-
 
               return null;
             })}
@@ -326,6 +469,5 @@ useEffect(() => {
         )}
       </div>
     </div>
-    
   );
 }
