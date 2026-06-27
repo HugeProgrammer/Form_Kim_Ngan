@@ -61,7 +61,7 @@ const handleRemindForm = async (formTitle) => {
     setMessage('');
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedTemplate) return;
 
@@ -71,7 +71,8 @@ const handleRemindForm = async (formTitle) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           templateId: selectedTemplate.id,
-          title: selectedTemplate.title,
+          // SỬA: Dùng selectedTemplate.name vì cấu hình server.js dùng name cho mẫu đơn này
+          title: selectedTemplate.title || selectedTemplate.name, 
           data: formData
         })
       });
@@ -80,7 +81,7 @@ const handleRemindForm = async (formTitle) => {
       if (response.ok) {
         setMessage('🎉 ' + result.message);
         setFormData({});
-        fetchLiveForms(); // Tự động reload lại bảng theo dõi
+        fetchLiveForms();
       } else {
         setMessage('❌ Có lỗi xảy ra: ' + result.error);
       }
@@ -89,6 +90,43 @@ const handleRemindForm = async (formTitle) => {
       setMessage('❌ Không thể kết nối tới server.');
     }
   };
+
+// ... Trong phần hiển thị form (JSX) ...
+{selectedTemplate && (
+  <form onSubmit={handleSubmit} className="border-t border-gray-100 pt-6 space-y-5">
+    <div className="space-y-4">
+      <h3 className="text-lg font-bold text-blue-600 mb-4">
+        Bước 2: Nhập thông tin cho [{selectedTemplate.name || selectedTemplate.title}]
+      </h3>
+      
+      {selectedTemplate.fields.map((field) => (
+        <div key={field.id || field.name} className="flex flex-col">
+          <label className="text-sm font-semibold text-gray-600 mb-1">{field.label}</label>
+          {field.type === 'textarea' ? (
+            <textarea
+              className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={3}
+              placeholder={field.placeholder}
+              value={formData[field.id || field.name] || ''} 
+              onChange={(e) => setFormData({ ...formData, [field.id || field.name]: e.target.value })}
+            />
+          ) : (
+            <input
+              type="text"
+              className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder={field.placeholder}
+              value={formData[field.id || field.name] || ''} 
+              onChange={(e) => setFormData({ ...formData, [field.id || field.name]: e.target.value })}
+            />
+          )}
+        </div>
+      ))}
+    </div>
+    <button type="submit" className="w-full bg-emerald-600 text-white font-semibold p-3 rounded-lg hover:bg-emerald-700 transition-colors">
+      Đăng tải lên Frontend
+    </button>
+  </form>
+)}
 
   // ĐÃ BỔ SUNG LẠI: HÀM XÓA ĐƠN VĨNH VIỄN ĐỂ SỬA LỖI GẠCH CHÂN TRONG VS CODE
   const handleDeleteForm = async (formId) => {

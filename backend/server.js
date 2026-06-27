@@ -43,14 +43,15 @@ const formTemplates = [
       { name: 'loiNhan', label: 'Lời nhắn gửi', type: 'textarea', placeholder: 'Nhớ giữ kĩ nha...' }
     ]
   },
-{
+  {
     id: 'moi-di-choi',
+    title: '🛵 Vé Mời Đi Chơi', // SỬA: Thêm title để trùng khớp với các mẫu khác
     name: '🛵 Vé Mời Đi Chơi',
     fields: [
       { id: 'nguoiMoi', label: 'Tên tài xế', placeholder: 'Huy dắt đi chơi...' },
       { id: 'diaDiem', label: 'Địa điểm', placeholder: 'Vạn Hạnh Mall, Phố đi bộ...' },
-      { id: 'thoiGian', label: 'Thời điểm', placeholder: '7h tối nay, hoặc cuối tuần này nhé...' }, 
-      { id: 'ghiChu', label: 'Ghi chú (Note)', placeholder: 'Viết thêm lời dặn dò, ví dụ: Nhớ mặc áo khoác nha...' } 
+      { id: 'thoiGian', label: 'Thời điểm', placeholder: '7h tối nay...' }, 
+      { id: 'ghiChu', label: 'Ghi chú (Note)', type: 'textarea', placeholder: 'Viết thêm lời dặn dò...' } 
     ]
   },
   {
